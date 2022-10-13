@@ -15,3 +15,8 @@ body {
 .form-control {
   width: 50%;
 }
+
+.help {
+  background-color: blue;
+  font-style: italic;
+}

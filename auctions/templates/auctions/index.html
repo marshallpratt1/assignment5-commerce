@@ -4,6 +4,9 @@
 <h2>Active Listings</h2>
 
 <article>
+    {% for listing in listings %}
+        <section>{{ listing }}</section>
+    {% endfor %}
     <section>Listing 1</section>
 
     <section>Listing 2</section>

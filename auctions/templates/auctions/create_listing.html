@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block main %}
+{% if user.is_authenticated %}
+    <h2>Create Listing</h2>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            {{ field.label }}<br>
+            {{ field }} 
+            {% if  field.help_text %}
+               {{ field.help_text }}<br>  
+            {% endif %}  <br>
+            
+        {% endfor %}
+        <input type="Submit">
+    </form>
+{% else %}
+You must be logged in to make a listing
+{% endif %}
+
+
+{% endblock %}
