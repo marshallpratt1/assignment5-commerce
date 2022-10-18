@@ -5,12 +5,7 @@
 
 <article>
     {% for listing in listings %}
-        <section>{{ listing }}</section>
+        <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View Listing</a></section>
     {% endfor %}
-    <section>Listing 1</section>
-
-    <section>Listing 2</section>
-
-    <section>Listing 3</section>
 </article>
 {% endblock %}

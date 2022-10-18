@@ -3,10 +3,12 @@
 {% block main %}
 {% if user.is_authenticated %}
     <h2>Create Listing</h2>
-
-    {% if message %}
+    {% if messages %}
+    {% for message in messages %}
         <div>{{ message }}</div>
+    {% endfor %}
     {% endif %}
+
 
     <form method="POST">
         {% csrf_token %}
@@ -19,7 +21,7 @@
             {% endif %}  <br>
             
         {% endfor %}
-        <input type="Submit">
+        <input type="Submit"><a class="w3-button cancel-button"  href="{% url 'index' %}">Cancel</a>
     </form>
 {% else %}
 You must be logged in to make a listing

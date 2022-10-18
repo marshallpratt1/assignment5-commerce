@@ -1,7 +1,10 @@
+from dataclasses import fields
+from pyexpat import model
 from django import forms
+from .models import *
 
 
-class NewListing(forms.Form):
+class NewListing(forms.Form):    
     categories = [
         ('other', 'Other'),
         ('furniture', 'Furniture'),
@@ -12,8 +15,14 @@ class NewListing(forms.Form):
         ('apparel', 'Apparel'),
         ('electronics', 'Electronics'),
     ]
+    """
+    class Meta:
+        model=Listing
+        fields=['title', 'price', 'description', 'image', ]
+    """
     title = forms.CharField(label="Title:")    
-    price = forms.IntegerField(label="Price:", min_value=0)
-    category = forms.CharField(label="Category", widget=forms.Select(choices=categories))
+    price = forms.IntegerField(label="Price:", min_value=0)    
     description = forms.CharField(label="Entry:", widget=forms.Textarea())
     image = forms.FileField(label="Image:", required=False)
+   
+    category = forms.CharField(label="Category", widget=forms.Select(choices=categories))

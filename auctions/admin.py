@@ -4,7 +4,7 @@ from .models import *
 # Register your models here.
 #####################
 #user:   marshall
-#p-word: 12345
+#p-word: 1
 #####################
 admin.site.register(User)
 admin.site.register(Listing)

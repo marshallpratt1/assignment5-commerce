@@ -1,5 +1,5 @@
 from django.urls import path
-
+from django.conf import settings
 from . import views
 
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("CreateListing", views.create_listing, name="create_listing"),
+    path("Listing/<int:listing_id>", views.listing, name="listing"),
 ]

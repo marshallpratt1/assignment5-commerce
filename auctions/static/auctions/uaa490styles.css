@@ -1,3 +1,6 @@
+:root{
+  --button-color: #c3cedb
+}
 nav {
   display: flex;
   justify-content: space-between;
@@ -17,6 +20,23 @@ body {
 }
 
 .help {
-  background-color: blue;
   font-style: italic;
 }
+
+.view-listing {
+  float: right;
+  background-color: var(--button-color);
+  border-radius: .3rem;
+}
+
+
+.cancel-button{
+  margin: 5px;
+  background-color: var(--button-color);
+  border-radius: .3rem;
+}
+
+.listing-buttons {
+  display: inline;
+}
+

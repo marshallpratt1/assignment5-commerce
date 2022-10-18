@@ -1,0 +1,35 @@
+{% extends "auctions/layout.html" %}
+
+{% block main %}
+<h2>Active Listings</h2>
+
+<!-- BEGIN UI BUTTON -->
+{% if user.is_authenticated %}
+<form method="POST" style="display: inline;">
+    {% csrf_token %}
+    {% if user == listing.listing_user %}
+        <input type="submit" name="edit" value="Edit">
+        <input type="submit" name="delete" value="Delete">
+    {% else %}
+        <input type="submit" name="bid" value="Bid!">
+        <input type="submit" name="watchlist" value="Watchlist">
+    {% endif %}
+</form>
+{% else %}
+    <h5>Log in or register to bid on this item</h5>
+{% endif %}
+<!-- END UI BUTTONS -->
+
+<article>   
+    <h3 >{{ listing.title }}</h3>
+    <h5 >Price: {{ listing.price }}</h5>
+    <img src="{{ listing.image.url }}" />   
+    <hr>
+    <h4>User's Description:</h4>
+    {{ listing.description }}
+</article>
+
+
+
+
+{% endblock %}

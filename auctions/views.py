@@ -1,12 +1,12 @@
-from unicodedata import category
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from .forms import *
-
+from django.contrib import messages
 from .models import *
+from datetime import timedelta, date
 
 
 def index(request):
@@ -69,17 +69,27 @@ def register(request):
 def create_listing(request):
     if request.method == "POST":
         form = NewListing(request.POST)
-        if form.is_valid():
+        if form.is_valid():            
             listing_title = request.POST["title"]
             listing_price = request.POST["price"]
             listing_description = request.POST["description"]
             listing_image = request.POST["image"]
             listing_category = request.POST["category"]
-            listing = Listing(title=listing_title, price=listing_price, description=listing_description,
-                                image=listing_image, category=listing_category)
+            listing = Listing(listing_user=request.user, title=listing_title, price=listing_price, description=listing_description,
+                                image=listing_image, category=listing_category, end_date=date.today()+timedelta(days=7))
             listing.save()
-            print (f'{listing_title}, costs: {listing_price}, catgory: {listing_category}')
+            return redirect("listing", listing_id = listing.id)
+        else:
+            messages.error(request, 'Something went wrong')
+            return render(request, "auctions/create_listing.html", {"form": NewListing()})
+    else:
+        return render(request, "auctions/create_listing.html", {"form": NewListing()})
 
-    return render(request, "auctions/create_listing.html", {
-        "form": NewListing()
-    })
+def listing(request, listing_id):
+    try:        
+        listing = Listing.objects.get(id=listing_id)
+    except:
+        messages.error(request, "Cannot find that listing.")
+    return render(request, 'auctions/listing.html', {
+        "listing": listing
+        })
