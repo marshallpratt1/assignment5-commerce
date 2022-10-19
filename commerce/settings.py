@@ -122,9 +122,11 @@ USE_TZ = False
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "auctions/static/")]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/' 
 MEDIAFILES_DIRS = [os.path.join(BASE_DIR, "auctions/media/")]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+print(f'MEDIA ROOT: {MEDIA_ROOT}')
 
 # Auto-created primary key used when not defining a primary key type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

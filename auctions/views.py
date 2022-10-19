@@ -73,7 +73,7 @@ def create_listing(request):
             listing_title = request.POST["title"]
             listing_price = request.POST["price"]
             listing_description = request.POST["description"]
-            listing_image = request.POST["image"]
+            listing_image = request.FILES["image"]
             listing_category = request.POST["category"]
             listing = Listing(listing_user=request.user, title=listing_title, price=listing_price, description=listing_description,
                                 image=listing_image, category=listing_category, end_date=date.today()+timedelta(days=7))
