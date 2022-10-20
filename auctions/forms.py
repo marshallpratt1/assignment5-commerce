@@ -15,14 +15,9 @@ class NewListing(forms.Form):
         ('apparel', 'Apparel'),
         ('electronics', 'Electronics'),
     ]
-    """
-    class Meta:
-        model=Listing
-        fields=['title', 'price', 'description', 'image', ]
-    """
+ 
     title = forms.CharField(label="Title:")    
     price = forms.IntegerField(label="Price:", min_value=0)    
     description = forms.CharField(label="Entry:", widget=forms.Textarea())
-    image = forms.FileField(label="Image:", required=False)
-   
+    image = forms.ImageField(label="Image:", required=False)   
     category = forms.CharField(label="Category", widget=forms.Select(choices=categories))

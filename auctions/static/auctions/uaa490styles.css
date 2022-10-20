@@ -40,3 +40,9 @@ body {
   display: inline;
 }
 
+.w3-badge{
+  padding: 5px;
+  float: right;
+  border-radius: 10px;
+}
+

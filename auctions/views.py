@@ -73,7 +73,7 @@ def create_listing(request):
             listing_title = request.POST["title"]
             listing_price = request.POST["price"]
             listing_description = request.POST["description"]
-            listing_image = request.POST["image"]
+            listing_image = request.FILES["image"]
             listing_category = request.POST["category"]
             listing = Listing(listing_user=request.user, title=listing_title, price=listing_price, description=listing_description,
                                 image=listing_image, category=listing_category, end_date=date.today()+timedelta(days=7))
@@ -85,11 +85,75 @@ def create_listing(request):
     else:
         return render(request, "auctions/create_listing.html", {"form": NewListing()})
 
-def listing(request, listing_id):
-    try:        
+def edit_listing(request, listing_id):
+    if request.method == "POST":
+        form = NewListing(request.POST)
+        if form.is_valid():
+            listing = Listing.objects.get(id=listing_id)            
+            listing_title = request.POST["title"]
+            listing_price = request.POST["price"]
+            listing_description = request.POST["description"]
+            if request.FILES.get("image"):
+                listing.image.delete()
+                listing_image = request.FILES["image"]
+            else: listing_image = listing.image
+            listing_category = request.POST["category"]
+            listing.delete()
+            listing = Listing(listing_user=request.user, title=listing_title, price=listing_price, description=listing_description,
+                                image=listing_image, category=listing_category, end_date=date.today()+timedelta(days=7))
+            listing.save()
+            return redirect("listing", listing_id = listing.id)
+    else:        
         listing = Listing.objects.get(id=listing_id)
-    except:
-        messages.error(request, "Cannot find that listing.")
-    return render(request, 'auctions/listing.html', {
-        "listing": listing
+        form = NewListing(initial={
+            'title': listing.title,
+            'price': listing.price,
+            'description': listing.description,
+            'image': listing.image,
+            'category': listing.category,
         })
+        return render(request, "auctions/create_listing.html", {"form": form})
+
+def listing(request, listing_id):
+    if request.method == "POST":
+        if request.POST.get("delete"):
+            listing = Listing.objects.get(id=listing_id)
+            listing.image.delete()
+            listing.delete()
+            return redirect("index")
+        elif request.POST.get("edit"):
+            return redirect("edit_listing", listing_id)
+        elif request.POST.get("watchlist"):
+            watch = Watchlist()
+            watch.watchlist_listing = Listing.objects.get(id=listing_id)
+            watch.watchlist_user = request.user
+            watch.save()            
+            return render(request, 'auctions/listing.html', {
+            "listing": Listing.objects.get(id=listing_id),
+            "watchlist": True,
+            })
+        elif request.POST.get("remove_watchlist"):
+            watchlist = Watchlist.objects.filter(
+                    watchlist_listing = listing_id,
+                    watchlist_user = User.objects.get(id=request.user.id)
+            ).first()
+            watchlist.delete()
+            return render(request, 'auctions/listing.html', {
+            "listing": Listing.objects.get(id=listing_id),
+            "watchlist": False,
+            })
+
+    else:
+        try:        
+            listing = Listing.objects.get(id=listing_id)
+        except:
+            messages.error(request, "Cannot find that listing.")
+        if request.user.is_authenticated:
+            watchlist = Watchlist.objects.filter(
+                    watchlist_listing = listing_id,
+                    watchlist_user = User.objects.get(id=request.user.id)
+            ).first()
+        return render(request, 'auctions/listing.html', {
+            "listing": listing,
+            "watchlist": watchlist,
+            })
