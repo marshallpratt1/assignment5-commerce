@@ -21,3 +21,7 @@ class NewListing(forms.Form):
     description = forms.CharField(label="Entry:", widget=forms.Textarea())
     image = forms.ImageField(label="Image:", required=False)   
     category = forms.CharField(label="Category", widget=forms.Select(choices=categories))
+
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(label="New Comment:", widget=forms.Textarea())

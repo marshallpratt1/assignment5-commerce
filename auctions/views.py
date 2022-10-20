@@ -11,6 +11,7 @@ from datetime import timedelta, date
 
 def index(request):
     listings = Listing.objects.all()
+    if listings.count == 0: listings = False
     return render(request, "auctions/index.html", {"listings": listings})
 
 
@@ -114,8 +115,22 @@ def edit_listing(request, listing_id):
         })
         return render(request, "auctions/create_listing.html", {"form": form})
 
+
 def listing(request, listing_id):
+    #listing globals:
+    if request.user.is_authenticated:
+        watchlist = Watchlist.objects.filter(
+                        watchlist_listing = listing_id,
+                        watchlist_user = User.objects.get(id=request.user.id)
+                ).first()
+    comment_form = CommentForm()
+    comments = Comment.objects.filter(comment_listing = listing_id)
+    try: listing = Listing.objects.get(id=listing_id)
+    except: messages.error(request, "Cannot find that listing.")
+    if comments.count == 0: comments = False
+
     if request.method == "POST":
+    #handle submit button actions
         if request.POST.get("delete"):
             listing = Listing.objects.get(id=listing_id)
             listing.image.delete()
@@ -131,6 +146,8 @@ def listing(request, listing_id):
             return render(request, 'auctions/listing.html', {
             "listing": Listing.objects.get(id=listing_id),
             "watchlist": True,
+            "comments": comments,
+            "comment_form": comment_form,
             })
         elif request.POST.get("remove_watchlist"):
             watchlist = Watchlist.objects.filter(
@@ -139,21 +156,37 @@ def listing(request, listing_id):
             ).first()
             watchlist.delete()
             return render(request, 'auctions/listing.html', {
-            "listing": Listing.objects.get(id=listing_id),
+            "listing": listing,
             "watchlist": False,
+            "comments": comments,
+            "comment_form": comment_form,
+            })
+        elif request.POST.get("make_comment"):
+            comment_form = CommentForm(request.POST)
+            new_comment = Comment(
+                comment_user = User.objects.get(id=request.user.id),
+                comment_listing = listing,
+                comment = request.POST["comment"],
+                )
+            new_comment.save()
+            return render(request, 'auctions/listing.html', {
+            "listing": listing,
+            "watchlist": watchlist,
+            "comments": comments,
+            "comment_form": CommentForm(),
             })
 
-    else:
-        try:        
-            listing = Listing.objects.get(id=listing_id)
-        except:
-            messages.error(request, "Cannot find that listing.")
+    else: 
+    #this is a listing view request
+    #check for user authentication prior to assiginiong watchlist
+        
         if request.user.is_authenticated:
-            watchlist = Watchlist.objects.filter(
-                    watchlist_listing = listing_id,
-                    watchlist_user = User.objects.get(id=request.user.id)
-            ).first()
+            pass
+        else: watchlist = False        
+
         return render(request, 'auctions/listing.html', {
             "listing": listing,
             "watchlist": watchlist,
+            "comments": comments,
+            "comment_form": comment_form,
             })

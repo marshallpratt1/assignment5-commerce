@@ -7,16 +7,14 @@
     
     {% if user == listing.listing_user %}
         <input type="submit" name="edit" value="Edit">
-        <input type="submit" name="delete" value="Delete">
-    {% else %}
-        <input type="submit" name="bid" value="Bid!">
-    {% if watchlist %}    
-    <input type="submit" name="remove_watchlist" value="Remove From Watchlist">
-    <span class="w3-badge w3-grey">Watchlisted!</span>
-    {% else %}
-        <input type="submit" name="watchlist" value="Watchlist">
-    {% endif %}
-        
+        <input type="submit" name="delete" value="Delete">    
+    {% else %}        
+        {% if watchlist %}    
+        <input type="submit" name="remove_watchlist" value="Remove From Watchlist">
+        <span class="w3-badge w3-grey">Watchlisted!</span>
+        {% else %}
+            <input type="submit" name="watchlist" value="Watchlist">
+        {% endif %}        
     {% endif %}
 </form>
 {% else %}
@@ -24,13 +22,57 @@
 {% endif %}
 
 <article>   
-    <h3 >{{ listing.title }}</h3>
-    <h5 >Price: {{ listing.price }}</h5>       
-    <hr>
-    <h4>Owner's Description:</h4>
-    {{ listing.description }}
-    <hr>
-    <img src="{{ listing.image.url }}" />
+    <section>
+        <h3 >{{ listing.title }}</h3>
+    
+        <!-- BEGIN BID AND PRICE FORM -->
+        <form method="POST" class="price-bid" style="display:inline;">
+            {% csrf_token %}
+            <h5 >Price: {{ listing.price }}</h5> 
+            {% if user != listing.listing_user %}
+                Bid amount: <input type="number" id="bid_amount" min="{{ listing.price }}" value="{{ listing.price|add:'5' }}" >
+                <input type="submit" id="bid" value="Place Bid!">
+            {% endif %}
+        </form>
+    </section>
+    <!-- END BID AND PRICE FORM -->
+    
+    <section>
+        <h4>Owner's Description:</h4>
+        {{ listing.description }}
+    </section>
+    <section>        
+        <img src="{{ listing.image.url }}" />
+    </section>
+
+    <!-- BEGIN COMMENT FORM -->
+    <section>
+        <h4>Comments</h4>
+        {% if user.is_authenticated %}
+            <form method="POST">
+                {% csrf_token %}
+                {{ comment_form }}
+                <input type="submit" name="make_comment" value="Make comment">
+            </form>
+            {% else %}
+            Sign in or register to make a comment
+        {% endif %}
+        {% if comments %}
+            {% for comment in comments %}
+                <section>
+                    {{ comment.comment_user.username }} said:<br>
+                    "{{ comment.comment }}"
+                    {% if user == comment.comment_user %}
+                        Delete
+                    {% endif %}
+                </section>
+            {% endfor %}
+        {% else %}
+            <section>No one has commented on this listing yet, be the first!</section>
+        {% endif %}
+                
+    </section>
+
 </article>
 
 
