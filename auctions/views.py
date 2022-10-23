@@ -66,6 +66,13 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+def categories(request):
+    pass
+
+
+def watchlist(request):
+    pass
+
 
 def create_listing(request):
     if request.method == "POST":
@@ -169,6 +176,14 @@ def listing(request, listing_id):
                 comment = request.POST["comment"],
                 )
             new_comment.save()
+            return render(request, 'auctions/listing.html', {
+            "listing": listing,
+            "watchlist": watchlist,
+            "comments": comments,
+            "comment_form": CommentForm(),
+            })
+        elif request.POST.get("delete_comment"):
+            Comment.objects.get(id = request.POST["comment_id"]).delete()
             return render(request, 'auctions/listing.html', {
             "listing": listing,
             "watchlist": watchlist,

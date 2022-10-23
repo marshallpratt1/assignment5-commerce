@@ -30,8 +30,8 @@
             {% csrf_token %}
             <h5 >Price: {{ listing.price }}</h5> 
             {% if user != listing.listing_user %}
-                Bid amount: <input type="number" id="bid_amount" min="{{ listing.price }}" value="{{ listing.price|add:'5' }}" >
-                <input type="submit" id="bid" value="Place Bid!">
+                Bid amount: <input type="number" name="bid_amount" min="{{ listing.price|add:'1' }}" value="{{ listing.price|add:'5' }}" >
+                <input type="submit" name="submit_bid" value="Place Bid!">
             {% endif %}
         </form>
     </section>
@@ -60,11 +60,16 @@
         {% if comments %}
             {% for comment in comments %}
                 <section>
-                    {{ comment.comment_user.username }} said:<br>
-                    "{{ comment.comment }}"
-                    {% if user == comment.comment_user %}
-                        Delete
+                    <form method = "POST">
+                        {% csrf_token %}
+                        {{ comment.comment_user.username }} said:<br>
+                        "{{ comment.comment }}"
+                        {% if user == comment.comment_user %}
+                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                        <input type="submit" name="delete_comment" value="Delete Comment">
+                            
                     {% endif %}
+                    </form>
                 </section>
             {% endfor %}
         {% else %}

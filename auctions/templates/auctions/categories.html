@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+
+{% block main %}
+<h2>Categories</h2>
+
+<article>
+    
+    {% for listing in listings %}
+        <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View Listing</a></section>
+    {% endfor %}
+    {% else %}
+        There are currenlty no active listings to show
+    
+</article>
+{% endblock %}
