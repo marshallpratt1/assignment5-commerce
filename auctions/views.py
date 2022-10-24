@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,7 +11,7 @@ from datetime import timedelta, date
 
 
 def index(request):
-    listings = Listing.objects.all()
+    listings = Listing.objects.filter(closed=False)
     if listings.count == 0: listings = False
     return render(request, "auctions/index.html", {"listings": listings})
 
@@ -66,13 +67,30 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-def categories(request):
-    pass
+def categories_view(request, chosen_category):
+    if chosen_category == 'All':
+        categories = []
+        listings = Listing.objects.all()
+        for listing in listings:
+            if listing.category not in categories:
+                categories.append(listing.category)
+        if len(categories) == 0: categories = False
+        return render(request, 'auctions/categories.html', {"categories":categories,
+                                                            "All": True})
+    else:
+        listings = Listing.objects.filter(category=chosen_category)
+        return render(request, 'auctions/categories.html', {"listings":listings,
+                                                            "All": False,
+                                                            "category": chosen_category})
 
 
 def watchlist(request):
-    pass
-
+    listings=[]
+    user_watchlist = Watchlist.objects.filter(watchlist_user=request.user)
+    for item in user_watchlist:
+        listings.append(item.watchlist_listing)
+    if len(listings)==0: listings=False
+    return render(request, 'auctions/watchlist.html', {"listings": listings})
 
 def create_listing(request):
     if request.method == "POST":
@@ -81,10 +99,12 @@ def create_listing(request):
             listing_title = request.POST["title"]
             listing_price = request.POST["price"]
             listing_description = request.POST["description"]
-            listing_image = request.FILES["image"]
+            if request.FILES.get("image"): listing_image = request.FILES["image"]
+            else: listing_image = False
             listing_category = request.POST["category"]
-            listing = Listing(listing_user=request.user, title=listing_title, price=listing_price, description=listing_description,
-                                image=listing_image, category=listing_category, end_date=date.today()+timedelta(days=7))
+            listing = Listing(listing_user=request.user, title=listing_title, price=listing_price, 
+                                description=listing_description, image=listing_image, closed=False,
+                                category=listing_category, end_date=date.today()+timedelta(days=7))
             listing.save()
             return redirect("listing", listing_id = listing.id)
         else:
@@ -122,6 +142,15 @@ def edit_listing(request, listing_id):
         })
         return render(request, "auctions/create_listing.html", {"form": form})
 
+def my_listings(request):
+    listings = Listing.objects.filter(listing_user = request.user)
+    if len(listings)==0:listings=False
+    return render(request, "auctions/my_listings.html", {"listings": listings})
+
+def my_wins(request):
+    listings = Listing.objects.filter(highest_bidder = request.user, closed=True)
+    if len(listings)==0:listings=False
+    return render(request, "auctions/won_auctions.html", {"listings": listings})
 
 def listing(request, listing_id):
     #listing globals:
@@ -138,6 +167,31 @@ def listing(request, listing_id):
 
     if request.method == "POST":
     #handle submit button actions
+        if request.POST.get("make_bid"):
+            bid = Bid(listing=Listing.objects.get(id=listing_id),
+                    bid_user=request.user,
+                    bid_amount=request.POST["bid_amount"])
+            bid.save()
+            listing.price = request.POST["bid_amount"]
+            listing.highest_bidder=request.user
+            listing.save()
+            #add to watchlist if not already
+            Watchlist.objects.get_or_create(watchlist_listing=listing, watchlist_user=request.user)
+            return render(request, 'auctions/listing.html', {
+            "listing": listing,
+            "watchlist": True,
+            "comments": comments,
+            "comment_form": comment_form,
+            })
+        if request.POST.get("close_auction"):
+            listing.closed=True
+            listing.save()
+            return render(request, 'auctions/listing.html', {
+            "listing": listing,
+            "watchlist": watchlist,
+            "comments": comments,
+            "comment_form": comment_form,
+            })
         if request.POST.get("delete"):
             listing = Listing.objects.get(id=listing_id)
             listing.image.delete()
@@ -160,7 +214,7 @@ def listing(request, listing_id):
             watchlist = Watchlist.objects.filter(
                     watchlist_listing = listing_id,
                     watchlist_user = User.objects.get(id=request.user.id)
-            ).first()
+            )
             watchlist.delete()
             return render(request, 'auctions/listing.html', {
             "listing": listing,
@@ -183,7 +237,7 @@ def listing(request, listing_id):
             "comment_form": CommentForm(),
             })
         elif request.POST.get("delete_comment"):
-            Comment.objects.get(id = request.POST["comment_id"]).delete()
+            Comment.objects.get(id=request.POST["comment_id"]).delete()
             return render(request, 'auctions/listing.html', {
             "listing": listing,
             "watchlist": watchlist,

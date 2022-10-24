@@ -1,15 +1,31 @@
 {% extends "auctions/layout.html" %}
 
-{% block main %}
-<h2>Categories</h2>
 
-<article>
-    
-    {% for listing in listings %}
-        <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View Listing</a></section>
-    {% endfor %}
-    {% else %}
-        There are currenlty no active listings to show
-    
-</article>
-{% endblock %}
+    {% block main %}
+    {% if All %}
+    <h2>Categories</h2>
+
+    <article>
+        {% if categories %}
+        {% for category in categories %}
+            <section>{{ category }} <a class="w3-button view-listing"  href="{% url 'categories' category %}">View {{ category }}</a></section>
+        {% endfor %}
+        {% else %}
+            There are currenlty no active listings to show
+        {% endif %}
+    </article>
+   
+{% else %}
+     <h2>{{category}}</h2>
+
+    <article>
+        {% if listings %}
+        {% for listing in listings %}
+            <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a></section>
+        {% endfor %}
+        {% else %}
+            There are currenlty no active listings to show
+        {% endif %}
+    </article>
+    {% endif %}
+    {% endblock %}

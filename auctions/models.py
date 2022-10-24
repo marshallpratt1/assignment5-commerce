@@ -1,4 +1,5 @@
-from email.mime import image
+
+from email.policy import default
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -11,11 +12,13 @@ class Listing(models.Model):
     listing_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing_user")
     title = models.CharField(max_length=64)
     price = models.IntegerField()
+    highest_bidder = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     category = models.CharField(max_length=64)
     description = models.TextField()
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to="images/", blank=True)
     start_date = models.DateField(auto_now_add=True)
     end_date = models.DateField()
+    closed = models.BooleanField()
     
     def __str__(self):
         return f'{self.title}, price: ${self.price}'

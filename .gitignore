@@ -1,3 +1,6 @@
+# runtime folder at project root
+/media
+
 # Python
 *.pyc
 *~

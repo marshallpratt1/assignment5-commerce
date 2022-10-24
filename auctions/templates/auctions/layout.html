@@ -16,13 +16,21 @@
             <nav>
                 <span>
                     <a href="{% url 'index' %}">Active Listings</a>
-                    <a href="#">Categories</a>
-                    <a href="#">Watchlist</a>
+                    <a href="{% url 'categories' 'All' %}">Categories</a>
+                    <a href="{% url 'watchlist' %}">Watchlist</a>
                     <a href="{% url 'create_listing' %}">Create Listing</a>                   
                 </span>
                 <span>
                     {% if user.is_authenticated %}
-                        Welcome <strong>{{ user.username }}!</strong>
+                         
+                        <div class="w3-dropdown-hover">
+                            <button class="w3-button"><strong>Welcome {{ user.username }}!</strong> </button>                      
+                            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                                <a href="{% url 'my_listings' %}" class="w3-bar-item w3-button">My Listings</a>
+                                <a href="{% url 'my_wins' %}" class="w3-bar-item w3-button">Won Auctions</a>
+                              </div>
+                        </div>
+
                         <a href="{% url 'logout' %}">Log Out</a>
                     {% else %}
                         <a href="{% url 'login' %}">Log In</a>

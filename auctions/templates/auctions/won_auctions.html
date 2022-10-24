@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+
+{% block main %}
+<h2>Your Won Auctions!</h2>
+<article>    
+    {% if listings %}
+    {% for listing in listings %}
+        <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View Listing</a></section>
+    {% endfor %}
+    {% else %}
+        You haven't won any auctions.
+    {% endif %}
+
+</article >
+{% endblock %}

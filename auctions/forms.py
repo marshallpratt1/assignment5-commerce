@@ -6,14 +6,14 @@ from .models import *
 
 class NewListing(forms.Form):    
     categories = [
-        ('other', 'Other'),
-        ('furniture', 'Furniture'),
-        ('outdoor', 'Outdoor'),
-        ('sports', 'Sports'),
-        ('automobile', 'Automobile'),
-        ('bicycle', 'Bicycle'),
-        ('apparel', 'Apparel'),
-        ('electronics', 'Electronics'),
+        ('Other', 'Other'),
+        ('Furniture', 'Furniture'),
+        ('Outdoor', 'Outdoor'),
+        ('Sports', 'Sports'),
+        ('Automobile', 'Automobile'),
+        ('Bicycles', 'Bicycle'),
+        ('Apparel', 'Apparel'),
+        ('Electronics', 'Electronics'),
     ]
  
     title = forms.CharField(label="Title:")    

@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+
+    {% block main %}
+    
+    <h2>Watchlist</h2>
+    <article>
+    {% if listings %}
+    <section>
+        {% for listing in listings %}   
+        <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a></section>
+        {% endfor %}
+    </section>
+    {% else %}
+        <section>
+            You aren't currently watching any auctions.    
+        </section>
+    {% endif %}
+    </article>
+    {% endblock %}
