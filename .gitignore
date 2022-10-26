@@ -1,5 +1,5 @@
 # runtime folder at project root
-/media
+#/media
 
 # Python
 *.pyc
@@ -13,7 +13,7 @@ myvenv/
 venv/
 
 # Database
-db.sqlite3
+#db.sqlite3
 
 # Static folder at project root
 /static/
