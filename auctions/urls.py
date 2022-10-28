@@ -14,4 +14,5 @@ urlpatterns = [
     path("MyWins", views.my_wins, name="my_wins"),
     path("EditListing/<int:listing_id>", views.edit_listing, name="edit_listing"),
     path("Listing/<int:listing_id>", views.listing, name="listing"),
+    path("api/status", views.api_status, name="api-status"),
 ]

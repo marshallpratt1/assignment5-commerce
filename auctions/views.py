@@ -259,3 +259,13 @@ def listing(request, listing_id):
             "comments": comments,
             "comment_form": comment_form,
             })
+
+from django.http import JsonResponse
+def api_status(request):
+    status = {
+        'total_listings': Listing.objects.all().count(),
+        'active_listing':
+        Listing.objects.filter(closed=False).count()
+    }
+    print(f'{status}')
+    return JsonResponse(status)
