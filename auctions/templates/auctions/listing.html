@@ -62,7 +62,10 @@
         </section>
         {% if listing.image.url != '/media/images/False' %}   
             <section> 
+                <a href="{{ listing.image.url }}" data-lightbox="image-1" data-title="{{ listing.title }}"> <img src="{{ listing.image.url }}" style="width: 400px;"/></a>
+                <!--
                 <img src="{{ listing.image.url }}" style="width: 400px;"/>
+                -->
             </section>
         {% endif %}
 
