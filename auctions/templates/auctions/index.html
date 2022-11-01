@@ -6,7 +6,13 @@
 <article>
     {% if listings %}
     {% for listing in listings %}
-        <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View Listing</a></section>
+        <section>
+            {{ listing }} 
+            <img class="watch index-watch"  id="watch" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist()">
+            <div class="view-listing">                
+                <a class="w3-button listing-button"  href="{% url 'listing' listing.id %}">View Listing</a>
+            </div>           
+        </section>
     {% endfor %}
     {% else %}
         There are currenlty no active listings to show

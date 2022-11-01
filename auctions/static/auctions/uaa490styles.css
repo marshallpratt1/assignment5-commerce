@@ -25,6 +25,10 @@ body {
 
 .view-listing {
   float: right;
+  
+}
+
+.listing-button{
   background-color: var(--button-color);
   border-radius: .3rem;
 }
@@ -55,6 +59,8 @@ body {
   width: 20px;
 }
 
-#watch{
-  width: 20px;
+.index-watch{
+        position: absolute;
+        top: 0px;
+        right: 0px;
 }
