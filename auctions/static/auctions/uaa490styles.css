@@ -23,14 +23,10 @@ body {
   font-style: italic;
 }
 
-.view-listing {
-  float: right;
-  
-}
-
-.listing-button{
+.view-listing{
   background-color: var(--button-color);
-  border-radius: .3rem;
+  border-radius: .3rem;  
+  float: right;  
 }
 
 
@@ -55,12 +51,14 @@ body {
   border-radius:50%
 }
 
+#watch{
+  width: 20px;
+}
+
 .watch{
   width: 20px;
 }
 
 .index-watch{
-        position: absolute;
-        top: 0px;
-        right: 0px;
+  width: 20px;
 }

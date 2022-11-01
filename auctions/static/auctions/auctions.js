@@ -4,13 +4,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
 
-function watchlist() {
+function watchlist(listing_id) {
+    console.log(listing_id)
     if (document.querySelector('#watch').src == "https://cdn-icons-png.flaticon.com/512/1077/1077035.png"){
     document.querySelector('#watch').src = "https://cdn-icons-png.flaticon.com/512/2077/2077502.png";
 }
 else {
     document.querySelector('#watch').src = "https://cdn-icons-png.flaticon.com/512/1077/1077035.png";
 }
+
+fetch(`/api/watchlist/${listing_id}`)
+
 };
 
 

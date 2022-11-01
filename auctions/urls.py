@@ -15,5 +15,5 @@ urlpatterns = [
     path("EditListing/<int:listing_id>", views.edit_listing, name="edit_listing"),
     path("Listing/<int:listing_id>", views.listing, name="listing"),
     path("api/status", views.api_status, name="api-status"),
-    path("api/watchlist", views.api_watchlist, name="api-watchlist"),
+    path("api/watchlist/<int:listing_id>", views.api_watchlist, name="api-watchlist"),
 ]

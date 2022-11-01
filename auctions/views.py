@@ -1,3 +1,4 @@
+from ssl import create_default_context
 from unicodedata import category
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
@@ -13,7 +14,14 @@ from datetime import timedelta, date
 def index(request):
     listings = Listing.objects.filter(closed=False)
     if listings.count == 0: listings = False
-    return render(request, "auctions/index.html", {"listings": listings})
+    watched = Watchlist.objects.filter(watchlist_user=request.user)
+    watched_listings = []
+    for i in watched:
+        watched_listings.append(i.watchlist_listing)
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+        "watchlist": watched_listings, 
+    })
 
 
 def login_view(request):
@@ -199,29 +207,9 @@ def listing(request, listing_id):
             return redirect("index")
         elif request.POST.get("edit"):
             return redirect("edit_listing", listing_id)
-        elif request.POST.get("watchlist"):
-            watch = Watchlist()
-            watch.watchlist_listing = Listing.objects.get(id=listing_id)
-            watch.watchlist_user = request.user
-            watch.save()            
-            return render(request, 'auctions/listing.html', {
-            "listing": Listing.objects.get(id=listing_id),
-            "watchlist": True,
-            "comments": comments,
-            "comment_form": comment_form,
-            })
-        elif request.POST.get("remove_watchlist"):
-            watchlist = Watchlist.objects.filter(
-                    watchlist_listing = listing_id,
-                    watchlist_user = User.objects.get(id=request.user.id)
-            )
-            watchlist.delete()
-            return render(request, 'auctions/listing.html', {
-            "listing": listing,
-            "watchlist": False,
-            "comments": comments,
-            "comment_form": comment_form,
-            })
+        
+       
+
         elif request.POST.get("make_comment"):
             comment_form = CommentForm(request.POST)
             new_comment = Comment(
@@ -268,9 +256,13 @@ def api_status(request):
     }
     return JsonResponse(status)
 
-def api_watchlist(request):
-    print (f'The request object is: {request} {request.user.username} {request.user.id}')
-    watch = {
-        'this_listing': True#Listing.objects.filter(request.)
-    }
-    return JsonResponse(watch)
+
+#ask about the convention for writing a data input
+def api_watchlist(request, listing_id):
+    watch, created = Watchlist.objects.get_or_create(
+        watchlist_listing = Listing.objects.get(id=listing_id),
+        watchlist_user = request.user
+    )
+    if created: watch.save()
+    else: watch.delete()
+    return JsonResponse({})

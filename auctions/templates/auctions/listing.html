@@ -7,7 +7,7 @@
         {% csrf_token %}
 
         
-        {% if user == listing.listing_user and not listing.closed%}
+        {% if user == listing.listing_user and not listing.closed %}
             Would you like to 
             <input type="submit" name="edit" value="Edit"> or 
             <input type="submit" name="delete" value="Delete"> your listing?    
@@ -15,12 +15,13 @@
             This listing is closed, would you like to <input type="submit" name="delete" value="Delete"> your listing?
         </form>
         
-        {%else%}
-        <form id="watchlist_form" style="display: inline;" >
-            {% csrf_token %}
+        {%else%}        
             <!--TODO: adjust image source based off watchlist status -->
-            <img class="watch" id="watch" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist()">
-        </form>
+            {% if not watchlist %}
+                <img class="watch" style="width: 20px;" id="watch" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist('{{listing.id}}')">
+            {% else %}
+            <img class="watch" style="width: 20px;" id="watch" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{listing.id}}')">
+            {% endif %}        
         {% endif %}
 
     
