@@ -1,98 +1,102 @@
 {% extends "auctions/layout.html" %}
 
+  
 {% block main %}
-{% if user.is_authenticated %}
-<form method="POST" style="display: inline;">
-    {% csrf_token %}
-    
-    {% if user == listing.listing_user and not listing.closed%}
-        Would you like to 
-        <input type="submit" name="edit" value="Edit"> or 
-        <input type="submit" name="delete" value="Delete"> your listing?    
-    {% elif listing.closed %}
-        This listing is closed, would you like to <input type="submit" name="delete" value="Delete"> your listing?
-    {% else %}        
-        {% if watchlist %}    
-        <input type="submit" name="remove_watchlist" value="Remove From Watchlist">
-        <span class="w3-badge w3-grey">Watchlisted!</span>
-        {% else %}
-            <input type="submit" name="watchlist" value="Watchlist">
-        {% endif %}        
-    {% endif %}
-</form>
-{% else %}
-    <h5>Log in or register to bid on this item</h5>
-{% endif %}
+    {% if user.is_authenticated %}
+    <form method="POST" style="display: inline;">
+        {% csrf_token %}
 
-<article>   
-    <section>
-        <h3 >{{ listing.title }}</h3>
-    
-        <!-- BEGIN BID AND PRICE FORM -->
-        <form method="POST" class="price-bid" style="display:inline;">
-            {% csrf_token %}
-            <h5 >Price: {{ listing.price }}</h5> 
-            {% if user != listing.listing_user and user.is_authenticated %}
-                {% if listing.highest_bidder == user and not listing.closed %}
-                    You are the highest bidder!
-                {% elif listing.highest_bidder == user and listing.closed %}
-                    You won this auction!
-                {% else %}
-                Bid amount: <input type="number" name="bid_amount" min="{{ listing.price|add:'1' }}" value="{{ listing.price|add:'5' }}" >
-                <input type="submit" name="make_bid" value="Place Bid!">
-                {% endif %}
-            {% else %}
-                {% if not listing.closed %}
-                <input type="submit" name="close_auction" value="Close Auction!">
-                {% elif listing.closed and listing.highest_bidder %}
-                    Congrats! <strong>{{listing.highest_bidder}}</strong> has won this auction.
-                {% endif %}
-            {% endif %}
+        
+        {% if user == listing.listing_user and not listing.closed%}
+            Would you like to 
+            <input type="submit" name="edit" value="Edit"> or 
+            <input type="submit" name="delete" value="Delete"> your listing?    
+        {% elif listing.closed %}
+            This listing is closed, would you like to <input type="submit" name="delete" value="Delete"> your listing?
         </form>
-    </section>
-    <!-- END BID AND PRICE FORM -->
+        
+        {%else%}
+        <form id="watchlist_form" style="display: inline;" >
+            {% csrf_token %}
+            <!--TODO: adjust image source based off watchlist status -->
+            <img class="watch" id="watch" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist()">
+        </form>
+        {% endif %}
+
     
-    <section>
-        <h4>Owner's Description:</h4>
-        {{ listing.description }}
-    </section>
-    {% if listing.image.url != '/media/images/False' %}   
-        <section> 
-            <img src="{{ listing.image.url }}" style="width: 400px;"/>
-        </section>
+    {% else %}
+        <h5>Log in or register to bid on this item</h5>
     {% endif %}
 
-    <!-- BEGIN COMMENT FORM -->
-    <section>
-        <h4>Comments</h4>
-        {% if user.is_authenticated %}
-            <form method="POST">
+    <article>   
+        <section>
+            <h3 >{{ listing.title }}</h3>
+        
+            <!-- BEGIN BID AND PRICE FORM -->
+            <form method="POST" class="price-bid" style="display:inline;">
                 {% csrf_token %}
-                {{ comment_form }}<br>
-                <input type="submit" name="make_comment" value="Make comment">
-            </form>
-            {% else %}
-            Sign in or register to make a comment
-        {% endif %}
-        {% if comments %}
-            {% for comment in comments %}
-                <section>
-                    <form method = "POST">
-                        {% csrf_token %}
-                        {{ comment.comment_user.username }} said:<br>
-                        "{{ comment.comment }}"
-                        {% if user == comment.comment_user %}
-                        <br>
-                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                        <input type="submit" name="delete_comment" value="Delete Comment">
-                            
+                <h5 >Price: {{ listing.price }}</h5> 
+                {% if user != listing.listing_user and user.is_authenticated %}
+                    {% if listing.highest_bidder == user and not listing.closed %}
+                        You are the highest bidder!
+                    {% elif listing.highest_bidder == user and listing.closed %}
+                        You won this auction!
+                    {% else %}
+                    Bid amount: <input type="number" name="bid_amount" min="{{ listing.price|add:'1' }}" value="{{ listing.price|add:'5' }}" >
+                    <input type="submit" name="make_bid" value="Place Bid!">
                     {% endif %}
-                    </form>
-                </section>
-            {% endfor %}
-        {% else %}
-            <section>No one has commented on this listing yet, be the first!</section>
-        {% endif %}                
-    </section>
-</article>
+                {% else %}
+                    {% if not listing.closed and user.is_authenticated %}
+                    <input type="submit" name="close_auction" value="Close Auction!">
+                    {% elif listing.closed and listing.highest_bidder %}
+                        Congrats! <strong>{{listing.highest_bidder}}</strong> has won this auction.
+                    {% endif %}
+                {% endif %}
+            </form>
+        </section>
+        <!-- END BID AND PRICE FORM -->
+        
+        <section>
+            <h4>Owner's Description:</h4>
+            {{ listing.description }}
+        </section>
+        {% if listing.image.url != '/media/images/False' %}   
+            <section> 
+                <img src="{{ listing.image.url }}" style="width: 400px;"/>
+            </section>
+        {% endif %}
+
+        <!-- BEGIN COMMENT FORM -->
+        <section>
+            <h4>Comments</h4>
+            {% if user.is_authenticated %}
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ comment_form }}<br>
+                    <input type="submit" name="make_comment" value="Make comment">
+                </form>
+                {% else %}
+                Sign in or register to make a comment
+            {% endif %}
+            {% if comments %}
+                {% for comment in comments %}
+                    <section>
+                        <form method = "POST">
+                            {% csrf_token %}
+                            {{ comment.comment_user.username }} said:<br>
+                            "{{ comment.comment }}"
+                            {% if user == comment.comment_user %}
+                            <br>
+                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                            <input type="submit" name="delete_comment" value="Delete Comment">
+                                
+                        {% endif %}
+                        </form>
+                    </section>
+                {% endfor %}
+            {% else %}
+                <section>No one has commented on this listing yet, be the first!</section>
+            {% endif %}                
+        </section>
+    </article>  
 {% endblock %}

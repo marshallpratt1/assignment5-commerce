@@ -264,8 +264,13 @@ from django.http import JsonResponse
 def api_status(request):
     status = {
         'total_listings': Listing.objects.all().count(),
-        'active_listing':
-        Listing.objects.filter(closed=False).count()
+        'active_listings': Listing.objects.filter(closed=False).count()
     }
-    print(f'{status}')
     return JsonResponse(status)
+
+def api_watchlist(request):
+    print (f'The request object is: {request} {request.user.username} {request.user.id}')
+    watch = {
+        'this_listing': True#Listing.objects.filter(request.)
+    }
+    return JsonResponse(watch)

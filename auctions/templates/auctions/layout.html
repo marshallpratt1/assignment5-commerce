@@ -8,26 +8,9 @@
         <title>{% block title %}Auctions{% endblock %}</title>
         <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <link rel="stylesheet" href="{% static 'auctions/uaa490styles.css' %}" >
-   <script>
-document.addEventListener('DOMContentLoaded', function() {
-update_stats();
-setInterval(update_stats, 2000);
-});
-
-function update_stats() {  
-    fetch("/api/status")
-    .then(response => response.json())
-    .then(data => {
-        document.querySelector('#al').innerHTML = data['total_listings']
-    });
-}
-
-
-   </script>
-   
-   
-    </head>
+        <link rel="stylesheet" href="{% static 'auctions/uaa490styles.css' %}" >        
+        <script src="{% static 'auctions/auctions.js' %}"></script>   
+   </head>
     <body>
         <header>
             <h1>Auctions "R" Us</h1>
@@ -62,4 +45,6 @@ function update_stats() {
             {% endblock %}
         </main>
     </body>
+     
+   
 </html>
