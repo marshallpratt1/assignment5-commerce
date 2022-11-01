@@ -8,8 +8,8 @@
         <title>{% block title %}Auctions{% endblock %}</title>
         <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <link rel="stylesheet" href="{% static 'auctions/uaa490styles.css' %}" >        
-        <script src="{% static 'auctions/auctions.js' %}"></script>   
+        <link rel="stylesheet" href="{% static 'auctions/uaa490styles.css' %}" > 
+        <link href="path/to/lightbox.css" rel="stylesheet" />    
    </head>
     <body>
         <header>
@@ -43,7 +43,9 @@
         <main>
             {% block main %}
             {% endblock %}
-        </main>
+        </main>           
+        <script src="{% static 'auctions/auctions.js' %}"></script>   
+        <script src="path/to/lightbox.js"></script>
     </body>
      
    
