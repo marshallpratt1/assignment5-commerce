@@ -15,13 +15,14 @@
             This listing is closed, would you like to <input type="submit" name="delete" value="Delete"> your listing?
         </form>
         
-        {%else%}        
-            <!--TODO: adjust image source based off watchlist status -->
+        {%else%}                
+            <!--Javascript manages the watchlist
             {% if not watchlist %}
-                <img class="watch" style="width: 20px;" id="watch" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist('{{listing.id}}')">
+                <img class="watch" style="width: 20px;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist('{{listing.id}}')">
             {% else %}
-            <img class="watch" style="width: 20px;" id="watch" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{listing.id}}')">
+            <img class="watch" style="width: 20px;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{listing.id}}')">
             {% endif %}        
+            -->
         {% endif %}
 
     
@@ -31,6 +32,13 @@
 
     <article>   
         <section>
+            {% if user.is_authenticated %}
+                {% if not watchlist %}
+                    <img class="watch" style="width: 20px; float: right;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist('{{listing.id}}')">
+                {% else %}
+                <img class="watch" style="width: 20px; float: right;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{listing.id}}')">
+                {% endif %}
+            {% endif %}    
             <h3 >{{ listing.title }}</h3>
         
             <!-- BEGIN BID AND PRICE FORM -->

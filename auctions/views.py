@@ -14,10 +14,11 @@ from datetime import timedelta, date
 def index(request):
     listings = Listing.objects.filter(closed=False)
     if listings.count == 0: listings = False
-    watched = Watchlist.objects.filter(watchlist_user=request.user)
     watched_listings = []
-    for i in watched:
-        watched_listings.append(i.watchlist_listing)
+    if request.user.is_authenticated:
+        watched = Watchlist.objects.filter(watchlist_user=request.user)        
+        for i in watched:
+            watched_listings.append(i.watchlist_listing)
     return render(request, "auctions/index.html", {
         "listings": listings,
         "watchlist": watched_listings, 
@@ -86,17 +87,24 @@ def categories_view(request, chosen_category):
         return render(request, 'auctions/categories.html', {"categories":categories,
                                                             "All": True})
     else:
+        watched_listings = []
+        if request.user.is_authenticated:
+            watched = Watchlist.objects.filter(watchlist_user=request.user)        
+            for i in watched:
+                watched_listings.append(i.watchlist_listing)
         listings = Listing.objects.filter(category=chosen_category)
         return render(request, 'auctions/categories.html', {"listings":listings,
                                                             "All": False,
-                                                            "category": chosen_category})
+                                                            "category": chosen_category,
+                                                            "watchlist": watched_listings,})
 
 
 def watchlist(request):
     listings=[]
-    user_watchlist = Watchlist.objects.filter(watchlist_user=request.user)
-    for item in user_watchlist:
-        listings.append(item.watchlist_listing)
+    if request.user.is_authenticated:
+        user_watchlist = Watchlist.objects.filter(watchlist_user=request.user)
+        for item in user_watchlist:
+            listings.append(item.watchlist_listing)
     if len(listings)==0: listings=False
     return render(request, 'auctions/watchlist.html', {"listings": listings})
 

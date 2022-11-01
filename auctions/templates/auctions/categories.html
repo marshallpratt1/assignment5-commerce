@@ -21,7 +21,17 @@
     <article>
         {% if listings %}
         {% for listing in listings %}
-            <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a></section>
+            <section>
+                {{ listing }} 
+                {% if user.is_authenticated and listing.listing_user != user %}
+                    {% if listing in watchlist %}
+                        <img class="watch" style="width:20px" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{ listing.id }}')">
+                    {% else %}
+                        <img class="watch" style="width:20px" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist('{{ listing.id }}')">
+                    {% endif %}
+                {% endif %}
+                <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a>
+            </section>
         {% endfor %}
         {% else %}
             There are currenlty no active listings to show
