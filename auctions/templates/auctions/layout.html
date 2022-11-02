@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <link rel="stylesheet" href="{% static 'auctions/uaa490styles.css' %}" > 
-        <link href="../../node_modules/lightbox2/dist/css/lightbox.css" rel="stylesheet" />    
+        <link rel="stylesheet" href="{% static 'auctions/lightbox/dist/css/lightbox.css' %}" >    
    </head>
     <body>
         <header>
@@ -45,7 +45,7 @@
             {% endblock %}
         </main>           
         <script src="{% static 'auctions/auctions.js' %}"></script>   
-        <script src="../../../node_modules/lightbox2/dist/js/lightbox.js"></script>
+        <script src="{% static 'auctions/lightbox/dist/js/lightbox.js' %}"></script>
     </body>
      
    

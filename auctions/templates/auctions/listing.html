@@ -2,6 +2,7 @@
 
   
 {% block main %}
+    <!-- BEGIN LISTING OWNER BUTTONS -->
     {% if user.is_authenticated %}
     <form method="POST" style="display: inline;">
         {% csrf_token %}
@@ -13,26 +14,19 @@
             <input type="submit" name="delete" value="Delete"> your listing?    
         {% elif listing.closed %}
             This listing is closed, would you like to <input type="submit" name="delete" value="Delete"> your listing?
-        </form>
+        </form>    
         
-        {%else%}                
-            <!--Javascript manages the watchlist
-            {% if not watchlist %}
-                <img class="watch" style="width: 20px;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist('{{listing.id}}')">
-            {% else %}
-            <img class="watch" style="width: 20px;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{listing.id}}')">
-            {% endif %}        
-            -->
         {% endif %}
 
     
     {% else %}
         <h5>Log in or register to bid on this item</h5>
     {% endif %}
-
+        <!-- END LISTING OWNER BUTTONS -->
     <article>   
+        <!-- BEGIN WATCHLIST HANDLILNG -->
         <section>
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and user != listing.listing_user %}
                 {% if not watchlist %}
                     <img class="watch" style="width: 20px; float: right;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist('{{listing.id}}')">
                 {% else %}
@@ -40,8 +34,8 @@
                 {% endif %}
             {% endif %}    
             <h3 >{{ listing.title }}</h3>
-        
-            <!-- BEGIN BID AND PRICE FORM -->
+        <!-- END WATCHLIST HANDLILNG -->
+        <!-- BEGIN BID AND PRICE FORM -->
             <form method="POST" class="price-bid" style="display:inline;">
                 {% csrf_token %}
                 <h5 >Price: {{ listing.price }}</h5> 
@@ -64,11 +58,13 @@
             </form>
         </section>
         <!-- END BID AND PRICE FORM -->
-        
+        <!-- BEGIN ITEM DESCRIPTION -->
         <section>
             <h4>Owner's Description:</h4>
             {{ listing.description }}
         </section>
+        <!-- END ITEM DESCRIPTION -->
+        <!-- BEGIN LIGHTBOX IMAGE -->
         {% if listing.image.url != '/media/images/False' %}   
             <section> 
                 <a href="{{ listing.image.url }}" data-lightbox="image-1" data-title="Caption"> 
@@ -76,7 +72,7 @@
                 </a>
             </section>
         {% endif %}
-
+        <!-- END LIGHTBOX IMAGE -->
         <!-- BEGIN COMMENT FORM -->
         <section>
             <h4>Comments</h4>
