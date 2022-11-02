@@ -67,7 +67,7 @@
         <!-- BEGIN LIGHTBOX IMAGE -->
         {% if listing.image.url != '/media/images/False' %}   
             <section> 
-                <a href="{{ listing.image.url }}" data-lightbox="image-1" data-title="Caption"> 
+                <a class="img-thumbnail" href="{{ listing.image.url }}" data-lightbox="{{listing.title}}" data-title="{{listing.title}}"> 
                     <img src="{{ listing.image.url }}" style="width: 400px;"/>
                 </a>
             </section>
@@ -107,4 +107,4 @@
         </section>
         <!-- END COMMENT FORM -->
     </article>  
-{% endblock %}
+    {% endblock %}
