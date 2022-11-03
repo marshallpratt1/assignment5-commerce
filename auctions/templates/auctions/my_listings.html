@@ -4,8 +4,22 @@
 <h2>Your Listings</h2>
 <article>    
     {% if listings %}
+
+    
     {% for listing in listings %}
-        <section>{{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View Listing</a></section>
+    <section>
+        {% if listing.closed %}
+            {% if listing.highest_bidder != None %}
+                <h4>Congrats!</h4>            
+                <p>{{listing.highest_bidder}} won {{ listing }}! <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a></p> 
+            {% else %}
+            <p>You closed {{ listing }} and there were no bids. <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a></p> 
+            {% endif %}
+                
+        {% else %}
+            {{ listing }} <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View Listing</a>
+        {% endif %}
+    </section>
     {% endfor %}
     {% else %}
         You don't have any listings.

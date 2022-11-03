@@ -124,6 +124,5 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "/static/")]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = 'media/images/' 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 # Auto-created primary key used when not defining a primary key type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

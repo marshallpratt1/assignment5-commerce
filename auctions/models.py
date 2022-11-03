@@ -21,6 +21,8 @@ class Listing(models.Model):
     closed = models.BooleanField()
     
     def __str__(self):
+        if (self.closed):
+            return f'{self.title} for ${self.price}'
         return f'{self.title}, price: ${self.price}'
 
 class Bid(models.Model):

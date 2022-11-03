@@ -11,9 +11,7 @@ function watchlist(listing_id) {
 else {
     document.querySelector(`#watch_${listing_id}`).src = "https://cdn-icons-png.flaticon.com/512/1077/1077035.png";
 }
-
 fetch(`/api/watchlist/${listing_id}`)
-
 };
 
 

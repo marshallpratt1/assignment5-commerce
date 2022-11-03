@@ -11,6 +11,8 @@ from .models import *
 from datetime import timedelta, date
 
 
+#display active listings, retrieve user's watchlist status
+#TODO: update Watchlist model to be able to use related_name
 def index(request):
     listings = Listing.objects.filter(closed=False)
     if listings.count == 0: listings = False
@@ -24,7 +26,7 @@ def index(request):
         "watchlist": watched_listings, 
     })
 
-
+#provided login 
 def login_view(request):
     if request.method == "POST":
 
@@ -44,12 +46,12 @@ def login_view(request):
     else:
         return render(request, "auctions/login.html")
 
-
+#provided logout
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-
+#provided register
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -76,6 +78,8 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+#displays only active categories
+#TODO: update models to handle this more efficiently
 def categories_view(request, chosen_category):
     if chosen_category == 'All':
         categories = []
@@ -98,7 +102,8 @@ def categories_view(request, chosen_category):
                                                             "category": chosen_category,
                                                             "watchlist": watched_listings,})
 
-
+#display user's wathced listings, retrieve user's watchlist status
+#TODO: update Watchlist model to be able to use related_name
 def watchlist(request):
     listings=[]
     if request.user.is_authenticated:
@@ -108,6 +113,7 @@ def watchlist(request):
     if len(listings)==0: listings=False
     return render(request, 'auctions/watchlist.html', {"listings": listings})
 
+#only active users can create a listing
 def create_listing(request):
     if request.method == "POST":
         form = NewListing(request.POST)
@@ -128,6 +134,7 @@ def create_listing(request):
             return render(request, "auctions/create_listing.html", {"form": NewListing()})
     else:
         return render(request, "auctions/create_listing.html", {"form": NewListing()})
+
 
 def edit_listing(request, listing_id):
     if request.method == "POST":
@@ -168,6 +175,8 @@ def my_wins(request):
     if len(listings)==0:listings=False
     return render(request, "auctions/won_auctions.html", {"listings": listings})
 
+#handles all  action on listing page
+#TODO: this function is pretty fat, look into ways to trim this down
 def listing(request, listing_id):
     #listing globals:
     if request.user.is_authenticated:
@@ -199,6 +208,7 @@ def listing(request, listing_id):
             "comments": comments,
             "comment_form": comment_form,
             })
+
         if request.POST.get("close_auction"):
             listing.closed=True
             listing.save()
@@ -208,15 +218,15 @@ def listing(request, listing_id):
             "comments": comments,
             "comment_form": comment_form,
             })
+
         if request.POST.get("delete"):
             listing = Listing.objects.get(id=listing_id)
             listing.image.delete()
             listing.delete()
             return redirect("index")
+
         elif request.POST.get("edit"):
             return redirect("edit_listing", listing_id)
-        
-       
 
         elif request.POST.get("make_comment"):
             comment_form = CommentForm(request.POST)
@@ -232,6 +242,7 @@ def listing(request, listing_id):
             "comments": comments,
             "comment_form": CommentForm(),
             })
+            
         elif request.POST.get("delete_comment"):
             Comment.objects.get(id=request.POST["comment_id"]).delete()
             return render(request, 'auctions/listing.html', {
@@ -266,6 +277,7 @@ def api_status(request):
 
 
 #ask about the convention for writing a data input
+#QUESTION FOR INSTRUCTOR: return an empty Json response?
 def api_watchlist(request, listing_id):
     watch, created = Watchlist.objects.get_or_create(
         watchlist_listing = Listing.objects.get(id=listing_id),

@@ -9,9 +9,15 @@
     <section>
         {% for listing in listings %}   
         <section>
-            {{ listing }} 
-            <img class="watch" style="width:20px" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{ listing.id }}')">
-            <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a>
+            {% if user == listing.highest_bidder and listing.closed %}
+                <h4>Congrats!</h4>            
+                <p>You won {{ listing }}! <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a></p> 
+                
+            {% else %}
+                {{ listing }}
+                <img class="watch" style="width:20px" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{ listing.id }}')">
+                <a class="w3-button view-listing"  href="{% url 'listing' listing.id %}">View {{ listing.title }}</a>
+            {% endif %}
         </section>
         {% endfor %}
     </section>

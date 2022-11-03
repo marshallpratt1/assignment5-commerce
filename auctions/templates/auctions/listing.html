@@ -38,7 +38,11 @@
         <!-- BEGIN BID AND PRICE FORM -->
             <form method="POST" class="price-bid" style="display:inline;">
                 {% csrf_token %}
-                <h5 >Price: {{ listing.price }}</h5> 
+                {% if listing.highest_bidder == None %}
+                    <h5>Opening Bid: {{ listing.price }}</h5> 
+                {% else %}
+                    <h5>Price: {{ listing.price }}, <em>{{ listing.highest_bidder }}</em> is currently winning!</h5> 
+                {% endif %}
                 {% if user != listing.listing_user and user.is_authenticated %}
                     {% if listing.highest_bidder == user and not listing.closed %}
                         You are the highest bidder!
