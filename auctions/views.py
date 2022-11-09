@@ -1,5 +1,3 @@
-from ssl import create_default_context
-from unicodedata import category
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -151,7 +149,7 @@ def edit_listing(request, listing_id):
             listing_category = request.POST["category"]
             listing.delete()
             listing = Listing(listing_user=request.user, title=listing_title, price=listing_price, description=listing_description,
-                                image=listing_image, category=listing_category, end_date=date.today()+timedelta(days=7))
+                                image=listing_image, category=listing_category, closed=False,end_date=date.today()+timedelta(days=7))
             listing.save()
             return redirect("listing", listing_id = listing.id)
     else:        
@@ -271,18 +269,19 @@ from django.http import JsonResponse
 def api_status(request):
     status = {
         'total_listings': Listing.objects.all().count(),
-        'active_listings': Listing.objects.filter(closed=False).count()
+        'active_listings': Listing.objects.filter(closed=False).count(),      
+        'watched_listings': Watchlist.objects.filter(watchlist_user=request.user).count(),  
     }
     return JsonResponse(status)
 
 
 #ask about the convention for writing a data input
-#QUESTION FOR INSTRUCTOR: return an empty Json response?
-def api_watchlist(request, listing_id):
+def api_toggle_watchlist(request, listing_id):
     watch, created = Watchlist.objects.get_or_create(
         watchlist_listing = Listing.objects.get(id=listing_id),
         watchlist_user = request.user
     )
-    if created: watch.save()
-    else: watch.delete()
-    return JsonResponse({})
+    if not created: watch.delete()
+    return JsonResponse({
+        'watched_listings': Watchlist.objects.filter(watchlist_user=request.user).count(),  
+    })

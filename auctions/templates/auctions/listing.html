@@ -28,9 +28,9 @@
         <section>
             {% if user.is_authenticated and user != listing.listing_user %}
                 {% if not watchlist %}
-                    <img class="watch" style="width: 20px; float: right;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="watchlist('{{listing.id}}')">
+                    <img class="watch" style="width: 20px; float: right;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" onclick="toggle_watchlist('{{listing.id}}')">
                 {% else %}
-                <img class="watch" style="width: 20px; float: right;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="watchlist('{{listing.id}}')">
+                <img class="watch" style="width: 20px; float: right;" id="watch_{{listing.id}}" src="https://cdn-icons-png.flaticon.com/512/2077/2077502.png" onclick="toggle_watchlist('{{listing.id}}')">
                 {% endif %}
             {% endif %}    
             <h3 >{{ listing.title }}</h3>
